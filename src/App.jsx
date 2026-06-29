@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { collection, query, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, getDocs, where, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { db, auth } from './firebase';
-import { Globe, Activity, Copy, Clock, AlertTriangle, CheckCircle, ShieldCheck, Plus, Code, Loader2, Trash2, Settings, Smartphone, Monitor, ServerCrash, Filter, Check, Info, X, DownloadCloud, LogOut, DatabaseBackup, Crown } from 'lucide-react';
+import { Globe, Activity, Copy, Clock, AlertTriangle, CheckCircle, ShieldCheck, Plus, Code, Loader2, Trash2, Settings, Smartphone, Monitor, ServerCrash, Filter, Check, Info, X, DownloadCloud, LogOut, DatabaseBackup, Crown, Zap } from 'lucide-react';
 import DateFilter from './components/DateFilter';
 import Login from './components/Login';
 import Logo28 from './components/Logo28';
