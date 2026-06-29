@@ -292,15 +292,19 @@ function App() {
   const db = firebase.firestore();
   async function initClickGuard() {
     try {
-      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipRes = await fetch('https://ipwho.is/');
       const ipData = await ipRes.json();
       let currentDomain = window.location.hostname.replace('www.', '');
       if (!currentDomain) currentDomain = 'local-test';
       await db.collection("visits").add({
-        ip: ipData.ip, website: currentDomain,
+        ip: ipData.ip || 'Unknown', 
+        website: currentDomain,
         userId: "${uid}",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
+        isp: ipData.connection?.isp || ipData.connection?.org || 'Unknown',
+        city: ipData.city || 'Unknown',
+        isProxy: ipData.security?.vpn || ipData.security?.proxy || false
       });
       console.log("ClickGuard: OK");
     } catch (e) {}
