@@ -50,6 +50,7 @@ function App() {
   // Modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showCodeModal, setShowCodeModal] = useState(false);
   
   // Forms
   const [newDomain, setNewDomain] = useState('');
@@ -267,12 +268,16 @@ function App() {
   };
 
   const copyTrackingCode = () => {
-    const code = `<!-- CLICKGUARD TRACKING CODE -->
-<script type="module">
-//<![CDATA[
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    setShowCodeModal(true);
+  };
 
+  const copySpecificCode = (type) => {
+    let code = '';
+    if (type === 'compat') {
+      code = `<!-- CLICKGUARD TRACKING CODE - Tương thích 100% -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyA5wRPP391kOLAosnhc0wWTDn1EgVy03zw",
     authDomain: "clickfrauddashboard.firebaseapp.com",
@@ -280,6 +285,31 @@ function App() {
     storageBucket: "clickfrauddashboard.firebasestorage.app",
     messagingSenderId: "145645586634",
     appId: "1:145645586634:web:1b1a8aae91a4a06fdbcc33"
+  };
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  async function initClickGuard() {
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      let currentDomain = window.location.hostname.replace('www.', '');
+      if (!currentDomain) currentDomain = 'local-test';
+      await db.collection("visits").add({
+        ip: ipData.ip, website: currentDomain,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        userAgent: navigator.userAgent
+      });
+      console.log("ClickGuard: OK");
+    } catch (e) {}
+  }
+  initClickGuard();
+</script>
+<!-- END CLICKGUARD -->`;
+    } else {
+      code = `<!-- CLICKGUARD TRACKING CODE - Web Framework -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   };
 
   const app = initializeApp(firebaseConfig);
@@ -731,6 +761,50 @@ function App() {
                 <button type="submit" className="btn-primary">Lưu Cấu Hình</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Get Code Modal */}
+      {showCodeModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{maxWidth: '650px'}}>
+            <h2 style={{marginBottom: '10px', fontSize: '1.5rem', fontWeight: '800'}}>Lấy Mã Theo Dõi</h2>
+            <p style={{color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem'}}>
+              Chọn loại nền tảng website của bạn để lấy đoạn mã phù hợp nhất.
+            </p>
+            
+            <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+              {/* Option 1 */}
+              <div style={{background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '20px', borderRadius: '16px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px'}}>
+                  <div>
+                    <h3 style={{fontSize: '1.15rem', color: 'white', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px'}}><Globe size={18} color="#81cd29"/> HTML thuần / Blogger / WordPress</h3>
+                    <p style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>Sử dụng thư viện truyền thống, tương thích 100% với mọi nền tảng kể cả chạy thử trên máy tính (file://).</p>
+                  </div>
+                  <button className="btn-primary" onClick={() => copySpecificCode('compat')} style={{padding: '8px 16px', fontSize: '0.9rem', flex: '0 0 auto', marginLeft: '12px', background: 'linear-gradient(135deg, rgba(129, 205, 41, 0.8) 0%, rgba(31, 149, 200, 0.8) 100%)'}}>
+                    <Copy size={14} /> Copy Mã
+                  </button>
+                </div>
+              </div>
+
+              {/* Option 2 */}
+              <div style={{background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '20px', borderRadius: '16px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px'}}>
+                  <div>
+                    <h3 style={{fontSize: '1.15rem', color: 'white', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px'}}><Zap size={18} color="#facc15"/> Web Framework (React, NextJS, Vite)</h3>
+                    <p style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>Sử dụng chuẩn ES Module hiện đại, tối ưu tốc độ tải trang cho các dự án code tay mới nhất.</p>
+                  </div>
+                  <button className="btn-primary" onClick={() => copySpecificCode('module')} style={{padding: '8px 16px', fontSize: '0.9rem', flex: '0 0 auto', marginLeft: '12px', background: 'linear-gradient(135deg, rgba(250, 204, 21, 0.8) 0%, rgba(245, 158, 11, 0.8) 100%)'}}>
+                    <Copy size={14} /> Copy Mã
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '30px'}}>
+              <button className="btn-cancel" onClick={() => setShowCodeModal(false)}>Đóng</button>
+            </div>
           </div>
         </div>
       )}
