@@ -1,50 +1,47 @@
-<!-- CLICKGUARD TRACKING CODE - Dán đoạn mã này vào trước thẻ </body> trong giao diện Blogger của từng website -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // Cấu hình Firebase của bạn
+<!-- CLICKGUARD TRACKING CODE - Tương thích 100% với HTML thuần / Blogger / WordPress -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+  // Cấu hình Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyA5wRPP391kOLAosnhc0wWTDn1EgVy03zw",
     authDomain: "clickfrauddashboard.firebaseapp.com",
     projectId: "clickfrauddashboard",
     storageBucket: "clickfrauddashboard.firebasestorage.app",
     messagingSenderId: "145645586634",
-    appId: "1:145645586634:web:1b1a8aae91a4a06fdbcc33",
-    measurementId: "G-ZNJLKY2DJ3"
+    appId: "1:145645586634:web:1b1a8aae91a4a06fdbcc33"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  // Khởi tạo Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
 
   async function initClickGuard() {
     try {
-      // 1. Lấy địa chỉ IP thực của khách qua API miễn phí
+      // Lấy IP khách
       const ipResponse = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipResponse.json();
       
-      // 2. Lấy tên miền hiện tại để phân loại (Multi-tenant)
-      const currentDomain = window.location.hostname.replace('www.', '');
+      // Lấy tên miền (nếu mở file trên máy tính sẽ hiển thị là 'local-test')
+      let currentDomain = window.location.hostname.replace('www.', '');
+      if (!currentDomain) currentDomain = 'local-test';
 
-      // 3. (Tuỳ chọn) Kiểm tra xem khách có đến từ Google Ads không
-      // const urlParams = new URLSearchParams(window.location.search);
-      // const isFromAds = urlParams.has('gclid');
-      
-      // 4. Bắn dữ liệu về máy chủ Firebase của bạn
-      await addDoc(collection(db, "visits"), {
+      // Gửi dữ liệu
+      await db.collection("visits").add({
         ip: ipData.ip,
         website: currentDomain,
-        timestamp: serverTimestamp(),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         userAgent: navigator.userAgent
       });
       
-      console.log("ClickGuard: IP Logged successfully");
+      console.log("ClickGuard: Hệ thống đang theo dõi truy cập.");
     } catch (error) {
-      console.error("ClickGuard Error:", error);
+      console.error("ClickGuard Lỗi:", error);
     }
   }
 
-  // Khởi chạy khi tải trang
   initClickGuard();
 </script>
 <!-- KẾT THÚC CLICKGUARD TRACKING CODE -->
