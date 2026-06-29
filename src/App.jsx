@@ -346,8 +346,14 @@ function App() {
 //]]>
 </script>
 <!-- KẾT THÚC CLICKGUARD TRACKING CODE -->`;
-    navigator.clipboard.writeText(code);
-    showToast('Đã copy Mã theo dõi! Đoạn mã này đã được gắn ID bảo mật của bạn.', 'info');
+    }
+    
+    navigator.clipboard.writeText(code).then(() => {
+      setShowCodeModal(false);
+      showToast('Đã copy Mã theo dõi! Đoạn mã này đã được gắn ID bảo mật của bạn.', 'success');
+    }).catch(() => {
+      showToast('Lỗi khi copy mã.', 'error');
+    });
   };
 
   const getActiveSiteName = () => {
