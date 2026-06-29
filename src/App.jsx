@@ -273,6 +273,8 @@ function App() {
 
   const copySpecificCode = (type) => {
     let code = '';
+    const uid = user ? user.uid : 'UNKNOWN_USER';
+    
     if (type === 'compat') {
       code = `<!-- CLICKGUARD TRACKING CODE - Tương thích 100% -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -296,6 +298,7 @@ function App() {
       if (!currentDomain) currentDomain = 'local-test';
       await db.collection("visits").add({
         ip: ipData.ip, website: currentDomain,
+        userId: "${uid}",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         userAgent: navigator.userAgent
       });
@@ -310,8 +313,14 @@ function App() {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyA5wRPP391kOLAosnhc0wWTDn1EgVy03zw",
+    authDomain: "clickfrauddashboard.firebaseapp.com",
+    projectId: "clickfrauddashboard",
+    storageBucket: "clickfrauddashboard.firebasestorage.app",
+    messagingSenderId: "145645586634",
+    appId: "1:145645586634:web:1b1a8aae91a4a06fdbcc33"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -324,7 +333,7 @@ function App() {
       await addDoc(collection(db, "visits"), {
         ip: ipData.ip || 'Unknown', 
         website: currentDomain, 
-        userId: "${user.uid}", // Định danh tài khoản khách hàng
+        userId: "${uid}",
         timestamp: serverTimestamp(),
         userAgent: navigator.userAgent,
         isp: ipData.connection?.isp || ipData.connection?.org || 'Unknown',
