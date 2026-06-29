@@ -1,0 +1,126 @@
+.date-filter-container {
+  position: relative;
+}
+
+.date-filter-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.date-filter-btn:hover, .date-filter-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.date-filter-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 1000;
+  background: #0f172a;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Overriding react-date-range Light Theme to Dark Theme */
+.rdrCalendarWrapper {
+  background-color: transparent !important;
+  color: #f8fafc !important;
+}
+
+.rdrDefinedRangesWrapper {
+  background-color: #1e293b !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  width: 200px !important;
+}
+
+.rdrStaticRange {
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.rdrStaticRange:hover, .rdrStaticRange.rdrStaticRangeSelected {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.rdrStaticRangeLabel {
+  color: #cbd5e1 !important;
+}
+
+.rdrStaticRange.rdrStaticRangeSelected .rdrStaticRangeLabel {
+  color: #3b82f6 !important;
+  font-weight: 600;
+}
+
+.rdrMonthAndYearPickers select {
+  color: #f8fafc !important;
+}
+
+.rdrMonthAndYearPickers select:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rdrDayNumber span {
+  color: #94a3b8 !important;
+}
+
+.rdrDayToday .rdrDayNumber span {
+  font-weight: 700;
+  color: white !important;
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+  background: #3b82f6 !important;
+}
+
+.rdrDayPassive .rdrDayNumber span {
+  color: #334155 !important;
+}
+
+.rdrDayHovered .rdrDayNumber, .rdrDayHovered .rdrDayNumber:after {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+.rdrSelected, .rdrInRange, .rdrStartEdge, .rdrEndEdge {
+  background: rgba(59, 130, 246, 0.2) !important;
+}
+
+.rdrStartEdge, .rdrEndEdge {
+  background: #3b82f6 !important;
+}
+
+.rdrStartEdge .rdrDayNumber span, .rdrEndEdge .rdrDayNumber span {
+  color: white !important;
+}
+
+.rdrMonthAndYearWrapper {
+  padding-top: 10px !important;
+}
+
+.rdrNextPrevButton {
+  background: rgba(255,255,255,0.05) !important;
+}
+.rdrNextPrevButton i {
+  border-color: transparent transparent transparent #94a3b8 !important;
+}
+.rdrNextPrevButton.rdrPprevButton i {
+  border-color: transparent #94a3b8 transparent transparent !important;
+}
